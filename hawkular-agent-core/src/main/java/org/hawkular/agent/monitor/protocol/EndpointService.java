@@ -74,10 +74,10 @@ import com.codahale.metrics.Timer.Context;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  * @param <S> the protocol specific {@link Session}
  */
-public abstract class EndpointService<L, S extends Session<L>> implements SamplingService<L> {
+public abstract class EndpointService<L extends NodeLocation, S extends Session<L>> implements SamplingService<L> {
     private static final MsgLogger LOG = AgentLoggers.getLogger(EndpointService.class);
 
     private class InventoryListenerSupport {

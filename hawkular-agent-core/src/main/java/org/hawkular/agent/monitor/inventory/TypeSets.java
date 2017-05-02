@@ -30,14 +30,14 @@ import org.hawkular.agent.monitor.log.MsgLogger;
  *
  * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
  */
-public class TypeSets<L> {
+public class TypeSets<L extends NodeLocation> {
     private static final MsgLogger log = AgentLoggers.getLogger(TypeSets.class);
 
-    public static <L> Builder<L> builder() {
+    public static <L extends NodeLocation> Builder<L> builder() {
         return new Builder<L>();
     }
 
-    public static class Builder<L> {
+    public static class Builder<L extends NodeLocation> {
         private Map<Name, TypeSet<AvailType<L>>> availTypeSets = new LinkedHashMap<>();
         private boolean enabled = true;
         private Map<Name, TypeSet<MetricType<L>>> metricTypeSets = new LinkedHashMap<>();
@@ -103,7 +103,7 @@ public class TypeSets<L> {
             Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), false);
 
     @SuppressWarnings("unchecked")
-    public static <L> TypeSets<L> empty() {
+    public static <L extends NodeLocation> TypeSets<L> empty() {
         return (TypeSets<L>) EMPTY;
     }
 

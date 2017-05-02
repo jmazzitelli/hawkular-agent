@@ -26,34 +26,33 @@ import org.hawkular.client.api.NotificationType;
 /**
  * @author John Mazzitelli
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public final class ResourceType<L>
-        extends NodeLocationProvider<L> {
+public final class ResourceType<L extends NodeLocation> extends NodeLocationProvider<L> {
 
-    public static <L> Builder<Builder<?, L>, L> builder() {
-        return new Builder<Builder<?, L>, L>();
+    public static <LL extends NodeLocation> Builder<Builder<?, LL>, LL> builder() {
+        return new Builder<Builder<?, LL>, LL>();
     }
 
-    public static class Builder<This extends Builder<?, L>, L>
-            extends NodeLocationProvider.Builder<This, L> {
+    public static class Builder<This extends Builder<?, LLL>, LLL extends NodeLocation>
+            extends NodeLocationProvider.Builder<This, LLL> {
 
         private String resourceNameTemplate;
         private List<Name> parents = new ArrayList<>();
         private List<Name> metricSetNames = new ArrayList<>();
         private List<Name> availSetNames = new ArrayList<>();
-        private List<MetricType<L>> metricTypes = new ArrayList<>();
-        private List<AvailType<L>> availTypes = new ArrayList<>();
+        private List<MetricType<LLL>> metricTypes = new ArrayList<>();
+        private List<AvailType<LLL>> availTypes = new ArrayList<>();
         private List<NotificationType> notificationTypes = new ArrayList<>();
-        private List<Operation<L>> operations = new ArrayList<>();
-        private List<ResourceConfigurationPropertyType<L>> resourceConfigurationPropertyTypes = new ArrayList<>();
+        private List<Operation<LLL>> operations = new ArrayList<>();
+        private List<ResourceConfigurationPropertyType<LLL>> resourceConfigurationPropertyTypes = new ArrayList<>();
 
         private Builder() {
             super();
         }
 
-        public ResourceType<L> build() {
-            return new ResourceType<L>(id,
+        public ResourceType<LLL> build() {
+            return new ResourceType<LLL>(id,
                     name,
                     location,
                     resourceNameTemplate,
@@ -92,17 +91,17 @@ public final class ResourceType<L>
             return getThis();
         }
 
-        public This availTypes(Collection<AvailType<L>> types) {
+        public This availTypes(Collection<AvailType<LLL>> types) {
             this.availTypes.addAll(types);
             return getThis();
         }
 
-        public This metricTypes(Collection<MetricType<L>> types) {
+        public This metricTypes(Collection<MetricType<LLL>> types) {
             this.metricTypes.addAll(types);
             return getThis();
         }
 
-        public This operation(Operation<L> operation) {
+        public This operation(Operation<LLL> operation) {
             this.operations.add(operation);
             return getThis();
         }
@@ -133,7 +132,7 @@ public final class ResourceType<L>
         }
 
         public This resourceConfigurationPropertyType(
-                ResourceConfigurationPropertyType<L> resourceConfigurationPropertyType) {
+                ResourceConfigurationPropertyType<LLL> resourceConfigurationPropertyType) {
             this.resourceConfigurationPropertyTypes.add(resourceConfigurationPropertyType);
             return getThis();
         }

@@ -38,6 +38,7 @@ import org.hawkular.agent.monitor.diagnostics.Diagnostics;
 import org.hawkular.agent.monitor.inventory.AvailType;
 import org.hawkular.agent.monitor.inventory.MeasurementInstance;
 import org.hawkular.agent.monitor.inventory.MetricType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
@@ -392,7 +393,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
     }
 
     @Override
-    public <L> void receivedEvent(InventoryEvent<L> event) {
+    public <L extends NodeLocation> void receivedEvent(InventoryEvent<L> event) {
         if (inventoryStorage != null) {
             inventoryStorage.receivedEvent(event);
         }

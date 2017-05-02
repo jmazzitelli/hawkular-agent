@@ -55,14 +55,14 @@ import org.jgrapht.traverse.GraphIterator;
  * @author John Mazzitelli
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public final class ResourceManager<L> {
+public final class ResourceManager<L extends NodeLocation> {
 
     /**
      * Indicates the results of the {@link ResourceManager#addResource(Resource)} method.
      */
-    public static class AddResult<L> {
+    public static class AddResult<L extends NodeLocation> {
         public enum Effect {
             ADDED, MODIFIED, UNCHANGED
         }

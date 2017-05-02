@@ -30,9 +30,9 @@ import java.util.List;
  *
  * @author John Mazzitelli
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public final class Operation<L> extends NodeLocationProvider<L> {
+public final class Operation<L extends NodeLocation> extends NodeLocationProvider<L> {
 
     private final boolean modifies;
     private final String internalName;

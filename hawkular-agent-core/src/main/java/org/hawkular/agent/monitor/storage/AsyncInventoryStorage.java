@@ -43,6 +43,7 @@ import org.hawkular.agent.monitor.inventory.MeasurementType;
 import org.hawkular.agent.monitor.inventory.MetricType;
 import org.hawkular.agent.monitor.inventory.MonitoredEndpoint;
 import org.hawkular.agent.monitor.inventory.NamedObject;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Operation;
 import org.hawkular.agent.monitor.inventory.OperationParam;
 import org.hawkular.agent.monitor.inventory.Resource;
@@ -90,7 +91,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
     /**
      * A builder of inventory JSON structures that can be sent to Hawkular-Inventory.
      */
-    private static class InventoryPayloadBuilder<L> {
+    private static class InventoryPayloadBuilder<L extends NodeLocation> {
 
         private final String feedId;
         private final String tenantId;
@@ -107,12 +108,12 @@ public class AsyncInventoryStorage implements InventoryStorage {
          * @param root the root resource to be sync'ed
          * @return sync structure for root resource in the given resource manager
          */
-        Offline<org.hawkular.inventory.api.model.Resource.Blueprint> buildRootResource(
+        <L extends NodeLocation> Offline<org.hawkular.inventory.api.model.Resource.Blueprint> buildRootResource(
                 ResourceManager<L> resourceManager,
                 Resource<L> root) {
             org.hawkular.inventory.api.model.Resource.Blueprint rootBP = buildResourceBlueprint(root);
-            InventoryStructure.Builder<org.hawkular.inventory.api.model.Resource.Blueprint> invBldr
-                    = InventoryStructure.Offline.of(rootBP);
+            InventoryStructure.Builder<org.hawkular.inventory.api.model.Resource.Blueprint> invBldr = InventoryStructure.Offline
+                    .of(rootBP);
             resource(resourceManager, root, invBldr);
             return invBldr.build();
         }
@@ -121,7 +122,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
          * Builds structure that can be sent to inventory to create or update resource type.
          * @return inventory structure rooted at the given resource type
          */
-        Offline<org.hawkular.inventory.api.model.ResourceType.Blueprint> buildResourceType(ResourceType<L> resourceType) {
+        <L extends NodeLocation> Offline<org.hawkular.inventory.api.model.ResourceType.Blueprint> buildResourceType(
+                ResourceType<L> resourceType) {
             // we don't sync parent-child relations for types; all types are stored at root level in inventory
             InventoryStructure.Builder<org.hawkular.inventory.api.model.ResourceType.Blueprint> invBldr;
             invBldr = InventoryStructure.Offline.of(buildResourceTypeBlueprint(resourceType));
@@ -135,12 +137,14 @@ public class AsyncInventoryStorage implements InventoryStorage {
          * @param measurementType the measurement type
          * @return inventory structure rooted at the given measurement type
          */
-        Offline<org.hawkular.inventory.api.model.MetricType.Blueprint> buildMetricType(MeasurementType<L> measurementType) {
+        <L extends NodeLocation> Offline<org.hawkular.inventory.api.model.MetricType.Blueprint> buildMetricType(
+                MeasurementType<L> measurementType) {
             org.hawkular.inventory.api.model.MetricType.Blueprint mtBP = buildMetricTypeBlueprint(measurementType);
             return InventoryStructure.Offline.of(mtBP).build();
         }
 
-        private org.hawkular.inventory.api.model.Resource.Blueprint buildResourceBlueprint(Resource<L> resource) {
+        private <L extends NodeLocation> org.hawkular.inventory.api.model.Resource.Blueprint buildResourceBlueprint(
+                Resource<L> resource) {
             String resourceId = getInventoryId(resource);
             String resourceName = resource.getName().getNameString();
             String resourceTypePath = newPathPrefix().resourceType(getInventoryId(resource.getResourceType())).get()
@@ -157,7 +161,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
             return resourceBP;
         }
 
-        private org.hawkular.inventory.api.model.ResourceType.Blueprint buildResourceTypeBlueprint(
+        private <L extends NodeLocation> org.hawkular.inventory.api.model.ResourceType.Blueprint buildResourceTypeBlueprint(
                 ResourceType<L> resourceType) {
             String resourceTypeId = getInventoryId(resourceType);
             String resourceTypeName = resourceType.getName().getNameString();
@@ -172,7 +176,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
             return resourceTypeBP;
         }
 
-        private org.hawkular.inventory.api.model.MetricType.Blueprint buildMetricTypeBlueprint(
+        private <L extends NodeLocation> org.hawkular.inventory.api.model.MetricType.Blueprint buildMetricTypeBlueprint(
                 MeasurementType<L> metricType) {
             String metricTypeId = getInventoryId(metricType);
             MetricUnit metricUnit = MetricUnit.NONE;
@@ -213,7 +217,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
                     .build();
         }
 
-        private void resource(ResourceManager<L> resourceManager, Resource<L> resource,
+        private <L extends NodeLocation> void resource(ResourceManager<L> resourceManager, Resource<L> resource,
                 AbstractBuilder<?> theBuilder) {
 
             // resource configuration
@@ -244,7 +248,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
             }
         }
 
-        private void resourceType(ResourceType<L> resourceType, AbstractBuilder<?> theBuilder) {
+        private <L extends NodeLocation> void resourceType(ResourceType<L> resourceType,
+                AbstractBuilder<?> theBuilder) {
             // operations (which are children of the resource type)
             Collection<? extends Operation<L>> ops = resourceType.getOperations();
             for (Operation<L> op : ops) {
@@ -257,7 +262,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
             resourceConfigurationTypes(rcpts, theBuilder);
         }
 
-        private void metric(Instance<L, ?> metric, AbstractBuilder<?> theBuilder) {
+        private <L extends NodeLocation> void metric(Instance<L, ?> metric, AbstractBuilder<?> theBuilder) {
 
             String metricId = getInventoryId(metric);
             String metricTypeId = getInventoryId(metric.getType());
@@ -275,7 +280,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
             theBuilder.addChild(blueprint);
         }
 
-        private void operation(Operation<L> operation, AbstractBuilder<?> theBuilder) {
+        private <L extends NodeLocation> void operation(Operation<L> operation, AbstractBuilder<?> theBuilder) {
 
             String operationId = getInventoryId(operation);
             String operationName = operation.getName().getNameString();
@@ -324,7 +329,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
             }
         }
 
-        private void resourceConfigurationTypes(Collection<? extends ResourceConfigurationPropertyType<L>> rcpts,
+        private <L extends NodeLocation> void resourceConfigurationTypes(
+                Collection<? extends ResourceConfigurationPropertyType<L>> rcpts,
                 AbstractBuilder<?> theBuilder) {
 
             if (!rcpts.isEmpty()) {
@@ -342,7 +348,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
             }
         }
 
-        private void resourceConfigurations(Collection<? extends ResourceConfigurationPropertyInstance<L>> rcpis,
+        private <L extends NodeLocation> void resourceConfigurations(
+                Collection<? extends ResourceConfigurationPropertyInstance<L>> rcpis,
                 AbstractBuilder<?> theBuilder) {
 
             if (!rcpis.isEmpty()) {
@@ -415,7 +422,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
     }
 
     @Override
-    public <L> void receivedEvent(InventoryEvent<L> event) {
+    public <L extends NodeLocation> void receivedEvent(InventoryEvent<L> event) {
         log.debug("Received inventory event");
         ResourceManager<L> resourceManager = event.getResourceManager();
         MonitoredEndpoint<EndpointConfiguration> endpoint = event.getSamplingService().getMonitoredEndpoint();
@@ -476,7 +483,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
         });
     }
 
-    private <L> Collection<MeasurementType<L>> getMetricTypesToSync(List<ResourceType<L>> resourceTypes) {
+    private <L extends NodeLocation> Collection<MeasurementType<L>> getMetricTypesToSync(
+            List<ResourceType<L>> resourceTypes) {
         Map<String, MeasurementType<L>> measTypes = new HashMap<>();
         resourceTypes.forEach(rt -> {
             rt.getMetricTypes().stream()
@@ -553,8 +561,9 @@ public class AsyncInventoryStorage implements InventoryStorage {
         Entity.Blueprint bp = resourceStructure.get(nodePath);
         if (bp instanceof org.hawkular.inventory.api.model.Resource.Blueprint) {
             CanonicalPath resourceTypePath = CanonicalPath.fromString(
-                    ((org.hawkular.inventory.api.model.Resource.Blueprint)bp).getResourceTypePath());
-            Collection<String> idsForType = resourcesPerType.computeIfAbsent(resourceTypePath.getSegment().getElementId(),
+                    ((org.hawkular.inventory.api.model.Resource.Blueprint) bp).getResourceTypePath());
+            Collection<String> idsForType = resourcesPerType.computeIfAbsent(
+                    resourceTypePath.getSegment().getElementId(),
                     k -> new ArrayList<>());
             idsForType.add(nodePath.toString());
         }
@@ -580,7 +589,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
         Entity.Blueprint bp = resourceStructure.get(nodePath);
         if (bp instanceof org.hawkular.inventory.api.model.Metric.Blueprint) {
             CanonicalPath metricTypePath = CanonicalPath.fromString(
-                    ((org.hawkular.inventory.api.model.Metric.Blueprint)bp).getMetricTypePath());
+                    ((org.hawkular.inventory.api.model.Metric.Blueprint) bp).getMetricTypePath());
             Collection<String> idsForType = metricsPerType.computeIfAbsent(metricTypePath.getSegment().getElementId(),
                     k -> new ArrayList<>());
             idsForType.add(nodePath.toString());
@@ -628,7 +637,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
         }
     }
 
-    private void syncInventoryData(InventoryMetric metric, ExtendedInventoryStructure inventoryStructure, String tenantId, int totalResourceCount)
+    private void syncInventoryData(InventoryMetric metric, ExtendedInventoryStructure inventoryStructure,
+            String tenantId, int totalResourceCount)
             throws Exception {
 
         InventoryMetric.WithData metricChunks = compressAndChunk(metric, inventoryStructure);
@@ -640,7 +650,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
         Timer.Context timer = diagnostics.getInventoryStorageRequestTimer().time();
 
         try {
-            log.tracef("Syncing [%d] elements to inventory: headers=[%s] metric=[%s]", totalResourceCount, headers, metric.name());
+            log.tracef("Syncing [%d] elements to inventory: headers=[%s] metric=[%s]", totalResourceCount, headers,
+                    metric.name());
 
             runSync(metricChunks, headers);
             tagMetric(metricChunks, headers);
@@ -692,8 +703,9 @@ public class AsyncInventoryStorage implements InventoryStorage {
         }
     }
 
-    private InventoryMetric.WithData compressAndChunk(InventoryMetric metric, ExtendedInventoryStructure inventoryStructure)
-                throws IOException {
+    private InventoryMetric.WithData compressAndChunk(InventoryMetric metric,
+            ExtendedInventoryStructure inventoryStructure)
+            throws IOException {
         String json = Util.toJson(inventoryStructure);
         ByteArrayOutputStream obj = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(obj);

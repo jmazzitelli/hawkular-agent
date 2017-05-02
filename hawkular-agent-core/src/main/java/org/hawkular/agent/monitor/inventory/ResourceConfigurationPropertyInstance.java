@@ -21,7 +21,8 @@ package org.hawkular.agent.monitor.inventory;
  *
  * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
  */
-public final class ResourceConfigurationPropertyInstance<L> extends Instance<L, ResourceConfigurationPropertyType<L>> {
+public final class ResourceConfigurationPropertyInstance<L extends NodeLocation>
+        extends Instance<L, ResourceConfigurationPropertyType<L>> {
 
     private final String value;
 

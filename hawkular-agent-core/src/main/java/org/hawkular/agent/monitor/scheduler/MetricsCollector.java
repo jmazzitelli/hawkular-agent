@@ -21,6 +21,7 @@ import java.util.Set;
 import org.hawkular.agent.monitor.api.SamplingService;
 import org.hawkular.agent.monitor.inventory.MeasurementInstance;
 import org.hawkular.agent.monitor.inventory.MetricType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.storage.MetricDataPoint;
@@ -31,7 +32,8 @@ import org.hawkular.agent.monitor.util.Consumer;
  *
  * @param <L> defines the class that the endpoint needs to locate the metric attributes
  */
-class MetricsCollector<L> extends MeasurementCollector<L, MetricType<L>, MetricDataPoint> implements Runnable {
+class MetricsCollector<L extends NodeLocation> extends MeasurementCollector<L, MetricType<L>, MetricDataPoint>
+        implements Runnable {
     static final MsgLogger LOG = AgentLoggers.getLogger(MetricsCollector.class);
 
     public MetricsCollector(SamplingService<L> endpointService,

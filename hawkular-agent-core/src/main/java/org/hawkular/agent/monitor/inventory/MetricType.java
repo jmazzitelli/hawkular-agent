@@ -23,9 +23,9 @@ import org.jboss.as.controller.client.helpers.MeasurementUnit;
 /**
  * @author John Mazzitelli
  *
- * @param <L> the type of the protocol specific location typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public final class MetricType<L> extends MeasurementType<L> {
+public final class MetricType<L extends NodeLocation> extends MeasurementType<L> {
 
     private final MeasurementUnit metricUnits;
 

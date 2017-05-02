@@ -45,9 +45,9 @@ import org.hawkular.agent.monitor.util.Util;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public final class Discovery<L> {
+public final class Discovery<L extends NodeLocation> {
 
     private static final MsgLogger log = AgentLoggers.getLogger(Discovery.class);
 

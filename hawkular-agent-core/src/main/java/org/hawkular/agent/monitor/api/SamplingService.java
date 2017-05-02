@@ -36,9 +36,9 @@ import org.hawkular.agent.monitor.util.Consumer;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public interface SamplingService<L> {
+public interface SamplingService<L extends NodeLocation> {
 
     /**
      * @return the endpoint this service is able to sample

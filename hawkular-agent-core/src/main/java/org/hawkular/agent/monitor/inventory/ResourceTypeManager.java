@@ -44,7 +44,7 @@ import org.jgrapht.traverse.GraphIterator;
  *
  * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
  */
-public final class ResourceTypeManager<L> {
+public final class ResourceTypeManager<L extends NodeLocation> {
     private static final MsgLogger log = AgentLoggers.getLogger(ResourceTypeManager.class);
     private final ListenableDirectedGraph<ResourceType<L>, DefaultEdge> resourceTypesGraph;
     private final DirectedNeighborIndex<ResourceType<L>, DefaultEdge> index;
@@ -61,7 +61,7 @@ public final class ResourceTypeManager<L> {
     }
 
     // for use by the above constructor
-    private static <L> Map<Name, TypeSet<ResourceType<L>>> buildTypeMapForConstructor(
+    private static <L extends NodeLocation> Map<Name, TypeSet<ResourceType<L>>> buildTypeMapForConstructor(
             Collection<ResourceType<L>> allTypes) {
         TypeSetBuilder<ResourceType<L>> bldr = TypeSet.<ResourceType<L>> builder();
         bldr.enabled(true);

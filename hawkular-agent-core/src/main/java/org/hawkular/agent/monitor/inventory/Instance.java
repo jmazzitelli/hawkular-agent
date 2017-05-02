@@ -24,7 +24,8 @@ package org.hawkular.agent.monitor.inventory;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  */
-public abstract class Instance<L, T extends AttributeLocationProvider<L>> extends AttributeLocationProvider<L> {
+public abstract class Instance<L extends NodeLocation, T extends AttributeLocationProvider<L>>
+        extends AttributeLocationProvider<L> {
 
     private final T type;
     private Resource<L> resource;

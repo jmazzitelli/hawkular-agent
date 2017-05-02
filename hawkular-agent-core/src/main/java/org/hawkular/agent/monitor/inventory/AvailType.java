@@ -19,7 +19,7 @@ package org.hawkular.agent.monitor.inventory;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class AvailType<L> extends MeasurementType<L> {
+public final class AvailType<L extends NodeLocation> extends MeasurementType<L> {
 
     private static final Pattern DEFAULT_UP_PATTERN = Pattern.compile("(?i)(UP|OK)");
 

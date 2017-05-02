@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.hawkular.agent.monitor.api.Avail;
 import org.hawkular.agent.monitor.inventory.ConnectionData;
 import org.hawkular.agent.monitor.inventory.Name;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.TypeSets;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
@@ -299,13 +300,13 @@ public class AgentCoreEngineConfiguration {
         }
     }
 
-    public static class ProtocolConfiguration<L> {
+    public static class ProtocolConfiguration<L extends NodeLocation> {
 
-        public static <L> Builder<L> builder() {
+        public static <L extends NodeLocation> Builder<L> builder() {
             return new Builder<L>();
         }
 
-        public static class Builder<L> {
+        public static class Builder<L extends NodeLocation> {
             private TypeSets<L> typeSets;
             private Map<String, EndpointConfiguration> endpoints = new LinkedHashMap<>();
 

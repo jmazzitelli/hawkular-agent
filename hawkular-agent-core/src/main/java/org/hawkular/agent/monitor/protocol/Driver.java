@@ -28,9 +28,9 @@ import org.hawkular.agent.monitor.inventory.NodeLocation;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public interface Driver<L> {
+public interface Driver<L extends NodeLocation> {
 
     /**
      * Fetches nodes that match the given {@code query} from a {@link MonitoredEndpoint} and returns them as an

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.inventory.ResourceManager;
 import org.hawkular.agent.monitor.inventory.ResourceTypeManager;
@@ -32,7 +33,7 @@ import org.hawkular.agent.monitor.inventory.ResourceTypeManager;
  *
  * @see InventoryListener
  */
-public class InventoryEvent<L> {
+public class InventoryEvent<L extends NodeLocation> {
 
     private final SamplingService<L> samplingService;
     private final ResourceManager<L> resourceManager;
@@ -54,10 +55,10 @@ public class InventoryEvent<L> {
      * @param removed         list of removed resources
      */
     private InventoryEvent(SamplingService<L> samplingService,
-                          ResourceManager<L> resourceManager,
-                          Optional<ResourceTypeManager<L>> resourceTypeManager,
-                          List<Resource<L>> addedOrModified,
-                          List<Resource<L>> removed) {
+            ResourceManager<L> resourceManager,
+            Optional<ResourceTypeManager<L>> resourceTypeManager,
+            List<Resource<L>> addedOrModified,
+            List<Resource<L>> removed) {
         if (samplingService == null) {
             throw new IllegalArgumentException("Sampling service cannot be null");
         }
@@ -102,9 +103,9 @@ public class InventoryEvent<L> {
      * @param resourceManager the resources associated with the event
      * @param removed         list of removed resources
      */
-    public static <L> InventoryEvent<L> removed(SamplingService<L> samplingService,
-                                              ResourceManager<L> resourceManager,
-                                              List<Resource<L>> removed) {
+    public static <LL extends NodeLocation> InventoryEvent<LL> removed(SamplingService<LL> samplingService,
+            ResourceManager<LL> resourceManager,
+            List<Resource<LL>> removed) {
         return new InventoryEvent<>(samplingService, resourceManager, Optional.empty(), new ArrayList<>(), removed);
     }
 
@@ -116,10 +117,11 @@ public class InventoryEvent<L> {
      * @param resourceManager the resources associated with the event
      * @param addedOrModified list of added or modified resources
      */
-    public static <L> InventoryEvent<L> addedOrModified(SamplingService<L> samplingService,
-                                              ResourceManager<L> resourceManager,
-                                              List<Resource<L>> addedOrModified) {
-        return new InventoryEvent<>(samplingService, resourceManager, Optional.empty(), addedOrModified, new ArrayList<>());
+    public static <LL extends NodeLocation> InventoryEvent<LL> addedOrModified(SamplingService<LL> samplingService,
+            ResourceManager<LL> resourceManager,
+            List<Resource<LL>> addedOrModified) {
+        return new InventoryEvent<>(samplingService, resourceManager, Optional.empty(), addedOrModified,
+                new ArrayList<>());
     }
 
     /**
@@ -132,11 +134,11 @@ public class InventoryEvent<L> {
      * @param addedOrModified list of added or modified resources
      * @param removed         list of removed resources
      */
-    public static <L> InventoryEvent<L> discovery(SamplingService<L> samplingService,
-                                                     ResourceManager<L> resourceManager,
-                                                     ResourceTypeManager<L> resourceTypeManager,
-                                                     List<Resource<L>> addedOrModified,
-                                                     List<Resource<L>> removed) {
+    public static <LL extends NodeLocation> InventoryEvent<LL> discovery(SamplingService<LL> samplingService,
+            ResourceManager<LL> resourceManager,
+            ResourceTypeManager<LL> resourceTypeManager,
+            List<Resource<LL>> addedOrModified,
+            List<Resource<LL>> removed) {
         return new InventoryEvent<>(
                 samplingService,
                 resourceManager,
@@ -145,7 +147,7 @@ public class InventoryEvent<L> {
                 removed);
     }
 
-    private static <T> Resource<T> getRootResource(Resource<T> resource) {
+    private static <LL extends NodeLocation> Resource<LL> getRootResource(Resource<LL> resource) {
         if (resource.getParent() == null) {
             return resource;
         }

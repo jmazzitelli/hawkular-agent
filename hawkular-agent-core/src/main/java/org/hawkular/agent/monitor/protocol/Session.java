@@ -31,7 +31,7 @@ import org.hawkular.agent.monitor.inventory.ResourceTypeManager;
  *
  * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
  */
-public abstract class Session<L> implements Closeable {
+public abstract class Session<L extends NodeLocation> implements Closeable {
 
     private final MonitoredEndpoint<EndpointConfiguration> endpoint;
     private final String feedId;

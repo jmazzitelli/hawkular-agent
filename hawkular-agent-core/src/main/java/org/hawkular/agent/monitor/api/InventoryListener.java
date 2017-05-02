@@ -16,6 +16,8 @@
  */
 package org.hawkular.agent.monitor.api;
 
+import org.hawkular.agent.monitor.inventory.NodeLocation;
+
 /**
  * A listener for changes in the inventory of resources maintained by the present agent.
  *
@@ -27,5 +29,5 @@ public interface InventoryListener {
      *
      * @param event the {@link InventoryEvent}
      */
-    <L> void receivedEvent(InventoryEvent<L> event);
+    <L extends NodeLocation> void receivedEvent(InventoryEvent<L> event);
 }

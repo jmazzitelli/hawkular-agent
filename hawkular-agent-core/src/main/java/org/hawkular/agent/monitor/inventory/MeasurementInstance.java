@@ -24,7 +24,7 @@ package org.hawkular.agent.monitor.inventory;
  * @param <L> the type of the protocol specific location typically a subclass of {@link NodeLocation}
  * @param <T> the measurement type
  */
-public final class MeasurementInstance<L, T extends MeasurementType<L>> extends Instance<L, T> {
+public final class MeasurementInstance<L extends NodeLocation, T extends MeasurementType<L>> extends Instance<L, T> {
 
     /**
      * If this property exists in {@link #getProperties()} then this is the metric ID that represents

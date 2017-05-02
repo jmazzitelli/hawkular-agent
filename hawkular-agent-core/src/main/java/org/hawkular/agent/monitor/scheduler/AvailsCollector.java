@@ -21,6 +21,7 @@ import java.util.Set;
 import org.hawkular.agent.monitor.api.SamplingService;
 import org.hawkular.agent.monitor.inventory.AvailType;
 import org.hawkular.agent.monitor.inventory.MeasurementInstance;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.storage.AvailDataPoint;
@@ -31,7 +32,8 @@ import org.hawkular.agent.monitor.util.Consumer;
  *
  * @param <L> defines the class that the endpoint needs to determine what availability to check
  */
-class AvailsCollector<L> extends MeasurementCollector<L, AvailType<L>, AvailDataPoint> implements Runnable {
+class AvailsCollector<L extends NodeLocation> extends MeasurementCollector<L, AvailType<L>, AvailDataPoint>
+        implements Runnable {
     static final MsgLogger LOG = AgentLoggers.getLogger(AvailsCollector.class);
 
     public AvailsCollector(SamplingService<L> endpointService,

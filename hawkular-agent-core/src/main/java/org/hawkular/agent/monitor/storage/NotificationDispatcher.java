@@ -21,6 +21,7 @@ import org.hawkular.agent.monitor.api.InventoryListener;
 import org.hawkular.agent.monitor.api.NotificationPayloadBuilder;
 import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration.EndpointConfiguration;
 import org.hawkular.agent.monitor.inventory.MonitoredEndpoint;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.client.api.NotificationType;
 import org.hawkular.inventory.paths.CanonicalPath;
 
@@ -37,7 +38,8 @@ public class NotificationDispatcher implements InventoryListener {
         this.feedId = feedId;
     }
 
-    @Override public <L> void receivedEvent(InventoryEvent<L> event) {
+    @Override
+    public <L extends NodeLocation> void receivedEvent(InventoryEvent<L> event) {
         MonitoredEndpoint<EndpointConfiguration> endpoint = event.getSamplingService().getMonitoredEndpoint();
         String endpointTenantId = endpoint.getEndpointConfiguration().getTenantId();
         String tenantId = (null != endpointTenantId) ? endpointTenantId

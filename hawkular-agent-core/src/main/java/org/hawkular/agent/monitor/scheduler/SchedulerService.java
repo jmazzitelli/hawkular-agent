@@ -29,6 +29,7 @@ import org.hawkular.agent.monitor.api.SamplingService;
 import org.hawkular.agent.monitor.diagnostics.Diagnostics;
 import org.hawkular.agent.monitor.inventory.AvailType;
 import org.hawkular.agent.monitor.inventory.MetricType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
@@ -49,8 +50,8 @@ import org.hawkular.agent.monitor.util.ThreadFactoryGenerator;
 public class SchedulerService implements InventoryListener {
     private static final MsgLogger log = AgentLoggers.getLogger(SchedulerService.class);
     private final Diagnostics diagnostics;
-    private final MeasurementScheduler<Object, MetricType<Object>, MetricDataPoint> metricScheduler;
-    private final MeasurementScheduler<Object, AvailType<Object>, AvailDataPoint> availScheduler;
+    private final MeasurementScheduler<NodeLocation, MetricType<NodeLocation>, MetricDataPoint> metricScheduler;
+    private final MeasurementScheduler<NodeLocation, AvailType<NodeLocation>, AvailDataPoint> availScheduler;
     private final ScheduledThreadPoolExecutor pingScheduler;
     private final MetricBufferedStorageDispatcher metricStorage;
     private final AvailBufferedStorageDispatcher availStorage;
@@ -127,7 +128,7 @@ public class SchedulerService implements InventoryListener {
     }
 
     @Override
-    public <L> void receivedEvent(InventoryEvent<L> event) {
+    public <L extends NodeLocation> void receivedEvent(InventoryEvent<L> event) {
         List<Resource<L>> added = event.getAddedOrModified();
         List<Resource<L>> removed = event.getRemoved();
         SamplingService<L> service = event.getSamplingService();
@@ -144,7 +145,7 @@ public class SchedulerService implements InventoryListener {
         unschedule(service, removed);
     }
 
-    public <L> void unschedule(SamplingService<L> service, Collection<Resource<L>> resources) {
+    public <L extends NodeLocation> void unschedule(SamplingService<L> service, Collection<Resource<L>> resources) {
         ((MeasurementScheduler) metricScheduler).unschedule(service, resources);
         ((MeasurementScheduler) availScheduler).unschedule(service, resources);
     }

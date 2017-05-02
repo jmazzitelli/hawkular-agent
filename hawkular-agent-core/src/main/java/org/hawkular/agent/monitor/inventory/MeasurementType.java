@@ -25,9 +25,9 @@ import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration.EndpointCo
  * A common superclass for {@link AvailType} and {@link MetricType}.
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
- * @param <L> the type of the protocol specific location typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public class MeasurementType<L> extends AttributeLocationProvider<L> {
+public class MeasurementType<L extends NodeLocation> extends AttributeLocationProvider<L> {
 
     private final Interval interval;
     private final String metricIdTemplate;

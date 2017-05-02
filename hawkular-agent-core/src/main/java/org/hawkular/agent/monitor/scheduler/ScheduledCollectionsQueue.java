@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.hawkular.agent.monitor.inventory.MeasurementInstance;
 import org.hawkular.agent.monitor.inventory.MeasurementType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
@@ -33,7 +34,7 @@ import org.hawkular.agent.monitor.log.MsgLogger;
  *
  * @author John Mazzitelli
  */
-public class ScheduledCollectionsQueue<L, T extends MeasurementType<L>> {
+public class ScheduledCollectionsQueue<L extends NodeLocation, T extends MeasurementType<L>> {
     private static final MsgLogger LOG = AgentLoggers.getLogger(ScheduledCollectionsQueue.class);
 
     //  WARNING: make sure you synchronize access to this queue!

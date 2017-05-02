@@ -18,6 +18,7 @@ package org.hawkular.agent.monitor.scheduler;
 
 import org.hawkular.agent.monitor.api.SamplingService;
 import org.hawkular.agent.monitor.inventory.MeasurementType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.storage.DataPoint;
@@ -30,7 +31,8 @@ import org.hawkular.agent.monitor.util.Consumer;
  * @param <T> defines the class of the type of measurement to be collected (e.g. metric or availability)
  * @param <D> defines the class that is the data point that can contain the measurement data
  */
-public abstract class MeasurementCollector<L, T extends MeasurementType<L>, D extends DataPoint> implements Runnable {
+public abstract class MeasurementCollector<L extends NodeLocation, T extends MeasurementType<L>, D extends DataPoint>
+        implements Runnable {
     static final MsgLogger LOG = AgentLoggers.getLogger(MeasurementCollector.class);
 
     private final SamplingService<L> endpointService;

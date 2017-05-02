@@ -47,6 +47,7 @@ import org.hawkular.agent.monitor.inventory.ID;
 import org.hawkular.agent.monitor.inventory.Interval;
 import org.hawkular.agent.monitor.inventory.MetricType;
 import org.hawkular.agent.monitor.inventory.Name;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Operation;
 import org.hawkular.agent.monitor.inventory.OperationParam;
 import org.hawkular.agent.monitor.inventory.ResourceConfigurationPropertyType;
@@ -1617,7 +1618,7 @@ public class MonitorServiceConfigurationBuilder {
      * @param resourceTypeBuilder the type being built whose metric and avail types are to be filled in
      * @param typeSetsBuilder all type metadata - this is where our metrics and avails are
      */
-    private static <L> void populateMetricAndAvailTypesForResourceType(
+    private static <L extends NodeLocation> void populateMetricAndAvailTypesForResourceType(
             ResourceType.Builder<?, L> resourceTypeBuilder,
             TypeSets.Builder<L> typeSetsBuilder) {
 

@@ -37,10 +37,10 @@ import org.hawkular.agent.monitor.scheduler.SchedulerService;
  * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
  * @param <S> the protocol specific {@link Session}
  */
-public class ProtocolService<L, S extends Session<L>> {
+public class ProtocolService<L extends NodeLocation, S extends Session<L>> {
     private static final MsgLogger log = AgentLoggers.getLogger(ProtocolService.class);
 
-    public static class Builder<L, S extends Session<L>> {
+    public static class Builder<L extends NodeLocation, S extends Session<L>> {
         private String name;
         private Map<String, EndpointService<L, S>> endpointServices = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class ProtocolService<L, S extends Session<L>> {
         }
     }
 
-    public static <L, S extends Session<L>> Builder<L, S> builder(String name) {
+    public static <L extends NodeLocation, S extends Session<L>> Builder<L, S> builder(String name) {
         return new Builder<L, S>().name(name);
     }
 

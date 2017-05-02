@@ -25,9 +25,9 @@ import org.hawkular.agent.monitor.inventory.NodeLocation;
  *
  * @author <a href="https://github.com/ppalaga">Peter Palaga</a>
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public interface LocationResolver<L> {
+public interface LocationResolver<L extends NodeLocation> {
     /**
      * Given a string, this will build a location object L from that string.
      *

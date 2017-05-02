@@ -26,11 +26,11 @@ import java.util.Set;
  *
  * @author John Mazzitelli
  *
- * @param <L> the type of the protocol specific location, typically a subclass of {@link NodeLocation}
+ * @param <L> the type of the protocol specific location
  */
-public final class Resource<L> extends NodeLocationProvider<L> {
+public final class Resource<L extends NodeLocation> extends NodeLocationProvider<L> {
 
-    public static class Builder<L>
+    public static class Builder<L extends NodeLocation>
             extends NodeLocationProvider.Builder<Builder<L>, L> {
         private ResourceType<L> resourceType;
         private Resource<L> parent;
@@ -90,7 +90,7 @@ public final class Resource<L> extends NodeLocationProvider<L> {
         }
     }
 
-    public static <L> Builder<L> builder() {
+    public static <L extends NodeLocation> Builder<L> builder() {
         return new Builder<L>();
     }
 
@@ -101,7 +101,7 @@ public final class Resource<L> extends NodeLocationProvider<L> {
      *
      * @param template start with the data found in the given template resource
      */
-    public static <L> Builder<L> builder(Resource<L> template) {
+    public static <L extends NodeLocation> Builder<L> builder(Resource<L> template) {
         return new Builder<L>(template);
     }
 

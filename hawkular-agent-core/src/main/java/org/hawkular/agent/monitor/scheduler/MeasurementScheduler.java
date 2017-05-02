@@ -30,6 +30,7 @@ import org.hawkular.agent.monitor.api.SamplingService;
 import org.hawkular.agent.monitor.inventory.AvailType;
 import org.hawkular.agent.monitor.inventory.MeasurementType;
 import org.hawkular.agent.monitor.inventory.MetricType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
@@ -47,7 +48,7 @@ import org.hawkular.agent.monitor.util.ThreadFactoryGenerator;
  * @param <T> the sublclass of {@link MeasurementType} to handle (such as metric types or avail types)
  * @param <D> the {@link DataPoint} type (such as metric data or avail data)
  */
-public abstract class MeasurementScheduler<L, T extends MeasurementType<L>, D extends DataPoint> {
+public abstract class MeasurementScheduler<L extends NodeLocation, T extends MeasurementType<L>, D extends DataPoint> {
 
     private static final MsgLogger LOG = AgentLoggers.getLogger(MeasurementScheduler.class);
 
@@ -59,7 +60,7 @@ public abstract class MeasurementScheduler<L, T extends MeasurementType<L>, D ex
      *
      * @return the new metric collection scheduler
      */
-    public static <LL> MeasurementScheduler<LL, MetricType<LL>, MetricDataPoint> forMetrics(
+    public static <LL extends NodeLocation> MeasurementScheduler<LL, MetricType<LL>, MetricDataPoint> forMetrics(
             String name, Consumer<MetricDataPoint> completionHandler) {
 
         return new MeasurementScheduler<LL, MetricType<LL>, MetricDataPoint>(name, completionHandler) {
@@ -92,7 +93,7 @@ public abstract class MeasurementScheduler<L, T extends MeasurementType<L>, D ex
      *
      * @return the new availability checking scheduler
      */
-    public static <LL> MeasurementScheduler<LL, AvailType<LL>, AvailDataPoint> forAvails(
+    public static <LL extends NodeLocation> MeasurementScheduler<LL, AvailType<LL>, AvailDataPoint> forAvails(
             String name, Consumer<AvailDataPoint> completionHandler) {
 
         return new MeasurementScheduler<LL, AvailType<LL>, AvailDataPoint>(name, completionHandler) {

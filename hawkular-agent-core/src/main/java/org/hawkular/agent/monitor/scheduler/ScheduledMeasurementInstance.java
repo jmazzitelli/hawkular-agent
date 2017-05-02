@@ -25,12 +25,13 @@ import org.hawkular.agent.monitor.inventory.AvailType;
 import org.hawkular.agent.monitor.inventory.MeasurementInstance;
 import org.hawkular.agent.monitor.inventory.MeasurementType;
 import org.hawkular.agent.monitor.inventory.MetricType;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 
 /**
  * Determines when the next collection should occur for a given measurement instance for a given resource.
  */
-public class ScheduledMeasurementInstance<L, T extends MeasurementType<L>>
+public class ScheduledMeasurementInstance<L extends NodeLocation, T extends MeasurementType<L>>
         implements Comparable<ScheduledMeasurementInstance<L, T>> {
 
     /**
@@ -40,7 +41,8 @@ public class ScheduledMeasurementInstance<L, T extends MeasurementType<L>>
      * @param resource whose metric schedules are to be created
      * @return the scheduled metrics for the resource
      */
-    public static <LL> Set<ScheduledMeasurementInstance<LL, MetricType<LL>>> createMetrics(Resource<LL> resource) {
+    public static <LL extends NodeLocation> Set<ScheduledMeasurementInstance<LL, MetricType<LL>>> createMetrics(
+            Resource<LL> resource) {
 
         long now = System.currentTimeMillis(); // use the same time for all collection time calcs for better grouping
         Set<ScheduledMeasurementInstance<LL, MetricType<LL>>> set = new HashSet<>(resource.getMetrics().size());
@@ -64,7 +66,8 @@ public class ScheduledMeasurementInstance<L, T extends MeasurementType<L>>
      * @param resource whose avail check schedules are to be created
      * @return the scheduled avail checks for the resource
      */
-    public static <LL> Set<ScheduledMeasurementInstance<LL, AvailType<LL>>> createAvails(Resource<LL> resource) {
+    public static <LL extends NodeLocation> Set<ScheduledMeasurementInstance<LL, AvailType<LL>>> createAvails(
+            Resource<LL> resource) {
 
         long now = System.currentTimeMillis(); // use the same time for all collection time calcs for better grouping
         Set<ScheduledMeasurementInstance<LL, AvailType<LL>>> set = new HashSet<>(resource.getAvails().size());

@@ -40,6 +40,7 @@ import org.hawkular.agent.monitor.inventory.Interval;
 import org.hawkular.agent.monitor.inventory.MetricType;
 import org.hawkular.agent.monitor.inventory.MonitoredEndpoint;
 import org.hawkular.agent.monitor.inventory.Name;
+import org.hawkular.agent.monitor.inventory.NodeLocation;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.inventory.ResourceManager;
 import org.hawkular.agent.monitor.inventory.ResourceType;
@@ -93,13 +94,13 @@ public class AsyncInventoryStorageTest {
             .name(new Name("Resource Type 2"))
             .location(new AnyLocation("/2"))
             .build();
-    private final Resource<AnyLocation> R_1 = Resource.<AnyLocation>builder()
+    private final Resource<AnyLocation> R_1 = Resource.<AnyLocation> builder()
             .id(new ID("r1"))
             .name(new Name("Resource 1"))
             .location(new AnyLocation("/1/1"))
             .type(RT_1)
             .build();
-    private final Resource<AnyLocation> R_2 = Resource.<AnyLocation>builder()
+    private final Resource<AnyLocation> R_2 = Resource.<AnyLocation> builder()
             .id(new ID("r2"))
             .name(new Name("Resource 2"))
             .location(new AnyLocation("/2/2"))
@@ -115,11 +116,12 @@ public class AsyncInventoryStorageTest {
         httpClientBuilder = mockHttp();
         diagnostics = new DiagnosticsImpl(null, new MetricRegistry(), "feed_id");
         int autoDiscoveryScanSeconds = 10;
-        storage = new AsyncInventoryStorage("feed_id", config, autoDiscoveryScanSeconds, httpClientBuilder, diagnostics);
+        storage = new AsyncInventoryStorage("feed_id", config, autoDiscoveryScanSeconds, httpClientBuilder,
+                diagnostics);
 
         // Mock SamplingService > MonitoredEndpoint > EndpointConfiguration
-        AgentCoreEngineConfiguration.EndpointConfiguration endpointConfiguration
-                = mock(AgentCoreEngineConfiguration.EndpointConfiguration.class);
+        AgentCoreEngineConfiguration.EndpointConfiguration endpointConfiguration = mock(
+                AgentCoreEngineConfiguration.EndpointConfiguration.class);
         when(endpointConfiguration.getTenantId()).thenReturn("tenant_id");
         when(endpointConfiguration.getName()).thenReturn("");
         MonitoredEndpoint<AgentCoreEngineConfiguration.EndpointConfiguration> endpoint = MonitoredEndpoint.of(
@@ -221,7 +223,7 @@ public class AsyncInventoryStorageTest {
         Thread.sleep(10);
 
         // Next run with 1 discovered resource under R_2
-        Resource<AnyLocation> r3 = Resource.<AnyLocation>builder()
+        Resource<AnyLocation> r3 = Resource.<AnyLocation> builder()
                 .id(new ID("r3"))
                 .name(new Name("Resource 3"))
                 .location(new AnyLocation("/2/2/3"))
@@ -311,7 +313,7 @@ public class AsyncInventoryStorageTest {
                 "http://ignore/ignore/strings?overwrite=true");
 
         // Add 1 discovered resource under R_2
-        Resource<AnyLocation> r3 = Resource.<AnyLocation>builder()
+        Resource<AnyLocation> r3 = Resource.<AnyLocation> builder()
                 .id(new ID("r3"))
                 .name(new Name("Resource 3"))
                 .location(new AnyLocation("/2/2/3"))
@@ -356,7 +358,8 @@ public class AsyncInventoryStorageTest {
         // Hack the AsyncInventoryStorage and autoDiscoveryScanSeconds so that it thinks metrics expire very quickly
         // High value will set persistenceRefreshDelay negative so that it always trigger refreshes
         int autoDiscoveryScanSeconds = (int) TimeUnit.DAYS.toSeconds(8);
-        storage = new AsyncInventoryStorage("feed_id", config, autoDiscoveryScanSeconds, httpClientBuilder, diagnostics);
+        storage = new AsyncInventoryStorage("feed_id", config, autoDiscoveryScanSeconds, httpClientBuilder,
+                diagnostics);
         storage.receivedEvent(InventoryEvent.discovery(
                 samplingService,
                 resourceManager,
@@ -397,23 +400,27 @@ public class AsyncInventoryStorageTest {
                 "http://ignore/ignore/strings?overwrite=true");
     }
 
-    private static class AnyLocation {
+    private static class AnyLocation implements NodeLocation {
         private String path;
 
         public AnyLocation(String path) {
             this.path = path;
         }
 
-        @Override public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
 
             AnyLocation that = (AnyLocation) o;
 
             return path != null ? path.equals(that.path) : that.path == null;
         }
 
-        @Override public int hashCode() {
+        @Override
+        public int hashCode() {
             return path != null ? path.hashCode() : 0;
         }
     }
