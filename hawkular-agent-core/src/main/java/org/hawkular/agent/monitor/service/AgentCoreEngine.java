@@ -33,6 +33,7 @@ import org.hawkular.agent.monitor.cmd.FeedCommProcessor;
 import org.hawkular.agent.monitor.cmd.WebSocketClientBuilder;
 import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration;
 import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration.MetricsExporterConfiguration;
+import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration.StorageAdapterConfiguration;
 import org.hawkular.agent.monitor.diagnostics.Diagnostics;
 import org.hawkular.agent.monitor.diagnostics.DiagnosticsImpl;
 import org.hawkular.agent.monitor.diagnostics.JBossLoggingReporter;
@@ -50,12 +51,14 @@ import org.hawkular.agent.monitor.storage.NotificationDispatcher;
 import org.hawkular.agent.monitor.storage.StorageAdapter;
 import org.hawkular.agent.monitor.util.Util;
 import org.hawkular.bus.common.BasicMessage;
+import org.hawkular.inventory.api.model.MetricsEndpoint;
 import org.jboss.logging.Logger;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -500,6 +503,7 @@ public abstract class AgentCoreEngine {
                 log.infoStartMetricsExporter(args[0], args[1]);
                 metricsExporter = new WebServer();
                 metricsExporter.start(args);
+                sendMetricsEndpointRegistrationRequest();
             } else {
                 log.infoMetricsExporterDisabled();
             }
@@ -670,6 +674,30 @@ public abstract class AgentCoreEngine {
         }
         String status = (String) result.get("status");
         return "UP".equals(status);
+    }
+
+    private void sendMetricsEndpointRegistrationRequest() throws Exception {
+        StorageAdapterConfiguration sac = configuration.getStorageAdapter();
+        MetricsExporterConfiguration mec = configuration.getMetricsExporterConfiguration();
+
+        MetricsEndpoint me = MetricsEndpoint.builder()
+                .feedId(getFeedId())
+                .host(mec.getHost())
+                .port(mec.getPort())
+                .build();
+
+        StringBuilder url = Util.getContextUrlString(sac.getUrl(), sac.getInventoryContext())
+                .append("register-metrics-endpoint");
+        Request request = httpClientBuilder.buildJsonPostRequest(url.toString(), null, Util.toJson(me));
+        Call call = httpClientBuilder.getHttpClient().newCall(request);
+
+        try (Response response = call.execute()) {
+            if (!response.isSuccessful()) {
+                throw new Exception("status-code=[" + response.code() + "], reason=["
+                        + response.message() + "], url=[" + request.url().toString() + "]");
+            }
+        }
+        log.debugf("Metrics endpoint registered");
     }
 
     /**
